@@ -8,7 +8,7 @@ tiles = list(range(32)) * 2
 state = {'mark': None,'count': 0,'won':False}
 hide = [True] * 64
 
-def square(x, y):
+def square(x, y):#Hce los cuadrados en x,y
     "Draw white square with black outline at (x, y)."
     up()
     goto(x, y)
@@ -24,11 +24,11 @@ def index(x, y):
     "Convert (x, y) coordinates to tiles index."
     return int((x + 200) // 50 + ((y + 200) // 50) * 8)
 
-def xy(count):
+def xy(count):#Pasa el numero de mosaicos en coordenada x,y
     "Convert tiles count to (x, y) coordinates."
     return (count % 8) * 50 - 200, (count // 8) * 50 - 200
 
-def tap(x, y):
+def tap(x, y):#Actualiza los cuadrados dependiendo el tap del usuario
     "Update mark and hidden tiles based on tap."
     if (-200 < x + 50 < 200) and (-200 < y < 200) and not state['won']:
         state['count'] += 1
@@ -55,7 +55,7 @@ def tap(x, y):
             state['won'] = True
             return
 
-def draw():
+def draw():#Funcion que dibuja la imagen 
     "Draw image and tiles."
     clear()
     goto(-50, 0)
@@ -83,7 +83,8 @@ def draw():
 
     update()
     ontimer(draw, 100)
-
+    
+#Caracteristicas del juego
 shuffle(tiles)
 setup(520, 620, 370, 0)
 addshape(car)
