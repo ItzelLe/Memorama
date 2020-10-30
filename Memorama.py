@@ -2,9 +2,10 @@ from random import *
 from turtle import *
 from freegames import path
 
+writer = Turtle(visible=False)
 car = path('car.gif')
 tiles = list(range(32)) * 2
-state = {'mark': None}
+state = {'mark': None,'count': 0,'won':False}
 hide = [True] * 64
 
 def square(x, y):
@@ -12,7 +13,7 @@ def square(x, y):
     up()
     goto(x, y)
     down()
-    color('black', 'white')
+    color('black', 'yellow')
     begin_fill()
     for count in range(4):
         forward(50)
@@ -29,34 +30,54 @@ def xy(count):
 
 def tap(x, y):
     "Update mark and hidden tiles based on tap."
-    spot = index(x, y)
-    mark = state['mark']
+    if (-200 < x + 50 < 200) and (-200 < y < 200) and not state['won']:
+        state['count'] += 1
+        writer.undo()
+        writer.write(state["count"],font=('Arial', 30, 'normal'))
+        spot = index(x+50, y)
+        mark = state['mark']
 
-    if mark is None or mark == spot or tiles[mark] != tiles[spot]:
-        state['mark'] = spot
-    else:
-        hide[spot] = False
-        hide[mark] = False
-        state['mark'] = None
+        if mark is None or mark == spot or tiles[mark] != tiles[spot]:
+            state['mark'] = spot
+        else:
+            hide[spot] = False
+            hide[mark] = False
+            state['mark'] = None
+        w = 0
+        for i in hide:
+            if not i:
+                w += 1
+        if w == 64:
+            writer.up()
+            writer.goto(-50, 270)
+            writer.down()
+            writer.write("Se acabo", font=('Arial', 15, 'normal'))
+            state['won'] = True
+            return
 
 def draw():
     "Draw image and tiles."
     clear()
-    goto(0, 0)
+    goto(-50, 0)
     shape(car)
     stamp()
 
     for count in range(64):
         if hide[count]:
             x, y = xy(count)
-            square(x, y)
+            square(x - 50, y)
 
     mark = state['mark']
 
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
+        if tiles[mark] < 10:
+            goto(x - 34, y + 2)
+        elif tiles[mark] < 20:
+            goto(x - 47, y + 2)
+        else:
+            goto(x - 45, y + 2)
         color('black')
         write(tiles[mark], font=('Arial', 30, 'normal'))
 
@@ -64,10 +85,15 @@ def draw():
     ontimer(draw, 100)
 
 shuffle(tiles)
-setup(420, 420, 370, 0)
+setup(520, 620, 370, 0)
 addshape(car)
 hideturtle()
 tracer(False)
+writer.up()
+writer.goto(-50, 210)
+writer.down()
+writer.color('black')
+writer.write(state['count'],font=('Arial', 30, 'normal'))
 onscreenclick(tap)
 draw()
 done()
