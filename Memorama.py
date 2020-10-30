@@ -8,7 +8,7 @@ tiles = list(range(32)) * 2
 state = {'mark': None,'count': 0,'won':False}
 hide = [True] * 64
 
-def square(x, y):#Hce los cuadrados en x,y
+def square(x, y):#Hace los cuadrados en x,y
     "Draw white square with black outline at (x, y)."
     up()
     goto(x, y)
